@@ -3,6 +3,7 @@ package com.travelapp.backend.controllers;
 import com.travelapp.backend.dto.AuthenticationRequest;
 import com.travelapp.backend.responses.AuthenticationObject;
 import com.travelapp.backend.responses.ResponseObject;
+import com.travelapp.backend.responses.TokenResponse;
 import com.travelapp.backend.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

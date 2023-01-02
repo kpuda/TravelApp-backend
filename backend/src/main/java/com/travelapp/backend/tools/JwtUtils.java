@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.travelapp.backend.configuration.ApplicationProperties;
+import com.travelapp.backend.responses.AuthenticationObject;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +26,17 @@ public class JwtUtils {
     public static final long EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
 
 
-    public String generateJWToken(Authentication user, Algorithm algorithm) {
+    public String generateJWToken(Authentication user, Date date, Algorithm algorithm) {
         List<String> claimsFromUser = getClaimsFromUser(user);
         return JWT.create()
                 .withSubject(user.getName())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .withExpiresAt(date)
                 .withIssuer(applicationProperties.getJwtSecretIssuer())
                 .withClaim("roles", claimsFromUser)
                 .sign(algorithm);
     }
 
-    String generateJWTRefreshToken(Authentication user, Algorithm algorithm) {
+    String generateJWTRefreshToken(Authentication user, Date date, Algorithm algorithm) {
         return JWT.create()
                 .withSubject(user.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 14 * 24 * 60 * 60 * 1000))
@@ -63,13 +64,14 @@ public class JwtUtils {
         return jwtVerifier;
     }
 
-    public String setHttpHeaders(Authentication userDetails, HttpServletResponse response) {
+    public AuthenticationObject setHttpHeaders(Authentication user, HttpServletResponse response) {
         Algorithm algorithm = Algorithm.HMAC256(applicationProperties.getJwtSecretKey().getBytes());
-        String accessToken = generateJWToken(userDetails, algorithm);
-        String refreshToken = generateJWTRefreshToken(userDetails, algorithm);
+        Date date = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
+        String accessToken = generateJWToken(user, date, algorithm);
+        String refreshToken = generateJWTRefreshToken(user, date, algorithm);
         response.setContentType(APPLICATION_JSON_VALUE);
         response.addCookie(new Cookie("access_token", accessToken));
         response.addCookie(new Cookie("refresh_token", refreshToken));
-        return accessToken;
+        return new AuthenticationObject(user.getName(), accessToken, refreshToken, getClaimsFromUser(user));
     }
 }

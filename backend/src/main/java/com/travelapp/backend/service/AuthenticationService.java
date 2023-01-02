@@ -2,7 +2,6 @@ package com.travelapp.backend.service;
 
 import com.travelapp.backend.dto.AuthenticationRequest;
 import com.travelapp.backend.responses.AuthenticationObject;
-import com.travelapp.backend.responses.ResponseObject;
 import com.travelapp.backend.tools.JwtUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +24,8 @@ public class AuthenticationService {
     public AuthenticationObject authenticate(AuthenticationRequest request, HttpServletResponse response) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())); //TODO custom auth manager?
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String token = jwtUtils.setHttpHeaders(authenticate, response);
-        Object credentials = authenticate.getCredentials();
-        return new AuthenticationObject(HttpStatus.OK.value(), token, "xd");
+        AuthenticationObject token = jwtUtils.setHttpHeaders(authenticate, response);
+        token.setStatusCode(HttpStatus.OK.value());
+        return token;
     }
 }

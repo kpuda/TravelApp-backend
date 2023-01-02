@@ -27,14 +27,13 @@ public class SampleDataLoader {
 
     @PostConstruct
     void run() {
-  /*      List<Role> roles = List.of(new Role("ROLE_USER"), new Role("ROLE_ADMIN"), new Role("ROLE_MOD"));
+        List<Role> roles = List.of(new Role("ROLE_USER"), new Role("ROLE_ADMIN"), new Role("ROLE_MOD"));
         roleRepository.saveAll(roles);
-*/
         User normalUser = new User("username", "Marie", "Johnson", "email@email", passwordEncoder.encode("password"), Set.of(new Role("ROLE_USER")));
         normalUser.setEnabled(true);
         userRepository.save(normalUser);
 
-        User admin = new User("admin", "admin@admin", passwordEncoder.encode("password"), Set.of(new Role(UserRole.ROLE_ADMIN.name())));
+        User admin = new User("admin", "admin@admin", passwordEncoder.encode("password"), Set.of(new Role(UserRole.ROLE_ADMIN.name()), new Role(UserRole.ROLE_USER.name()), new Role(UserRole.ROLE_MOD.name())));
         admin.setEnabled(true);
         userRepository.save(admin);
     }

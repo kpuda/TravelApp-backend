@@ -143,8 +143,7 @@ public class UserService implements UserDetailsService {
             }
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
-            org.springframework.security.core.userdetails.User springUser = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-            return springUser;
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         } else {
             log.info("User is empty");
             throw new BadCredentialsException(ConstStrings.BAD_CREDENTIALS.name());
