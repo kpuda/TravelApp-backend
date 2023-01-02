@@ -5,6 +5,7 @@ import com.travelapp.backend.entity.dtos.UserDto;
 import com.travelapp.backend.model.PasswordModel;
 import com.travelapp.backend.repository.UserRepository;
 import com.travelapp.backend.responses.ResponseObject;
+import com.travelapp.backend.responses.WrapperListObject;
 import com.travelapp.backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        System.out.println("XD");
-        return "hello";
+    @GetMapping("/users")
+    public WrapperListObject users() {
+        return userService.getUsers();
     }
 
     @PostMapping("/register")

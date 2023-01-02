@@ -11,6 +11,7 @@ import com.travelapp.backend.repository.RoleRepository;
 import com.travelapp.backend.repository.TokenRepository;
 import com.travelapp.backend.repository.UserRepository;
 import com.travelapp.backend.responses.ResponseObject;
+import com.travelapp.backend.responses.WrapperListObject;
 import com.travelapp.backend.tools.ConstStrings;
 import com.travelapp.backend.tools.Mapper;
 import jakarta.persistence.EntityExistsException;
@@ -29,10 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 import static com.travelapp.backend.tools.ConstStrings.*;
 
@@ -187,5 +185,10 @@ public class UserService implements UserDetailsService {
 
     private boolean checkIfOldPasswordIsValid(String oldPassword, User user) {
         return passwordEncoder.matches(oldPassword, user.getPassword());
+    }
+
+    public WrapperListObject getUsers() {
+        List<String> users=userRepository.getUsernames();
+        return new WrapperListObject(HttpStatus.OK.value(), users );
     }
 }

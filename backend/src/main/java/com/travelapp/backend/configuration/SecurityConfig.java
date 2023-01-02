@@ -1,5 +1,6 @@
 package com.travelapp.backend.configuration;
 
+import com.travelapp.backend.enums.UserRole;
 import com.travelapp.backend.service.AuthorizationFilter;
 import com.travelapp.backend.service.CustomAuthenticationProvider;
 import com.travelapp.backend.service.UserService;
@@ -32,23 +33,17 @@ public class SecurityConfig {
     private final AuthorizationFilter authorizationFilter;
     private final UserService userService;
 
+    private static final String[] WHITELISTED_ENDPOINTS = {"/api/authorization/login","/api/authorization/refresh"};
+    private static final String[] USER_ENDPOINTS = {"/api/user/**"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests().requestMatchers("/**").permitAll()//TODO delete
-                .and()
-/*                .authorizeHttpRequests().requestMatchers(NEWSLETTER_ALL_ENDPOINTS).permitAll()
-                .and()
                 .authorizeHttpRequests().requestMatchers(WHITELISTED_ENDPOINTS).permitAll()
                 .and()
-                .authorizeHttpRequests().requestMatchers(USER_ENDPOINTS).authenticated()
+                .authorizeHttpRequests().requestMatchers(USER_ENDPOINTS).hasAnyAuthority(UserRole.ROLE_USER.name(),UserRole.ROLE_ADMIN.name())
                 .and()
-                .authorizeHttpRequests().requestMatchers(NEWSLETTER_MODERATOR_ENDPOINTS).hasAnyAuthority(TokenRole.ROLE_MOD.name(), TokenRole.ROLE_ADMIN.name())
-                .and()
-                .authorizeHttpRequests().requestMatchers(ADMIN_ENDPOINTS).hasAnyAuthority(TokenRole.ROLE_MOD.name(), TokenRole.ROLE_ADMIN.name())
-                .and()*/
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
